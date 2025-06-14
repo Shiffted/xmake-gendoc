@@ -299,72 +299,47 @@ function _write_table_of_content(sitemap, db, locale, siteroot, page, apimetalis
 </div>]])
 end
 
-function _write_footer(sitemap, siteroot, jssearcharray)
-    sitemap:write(string.format("\n" .. [[
-<script src="%s/prism.js"></script>
+function _write_footer(sitemap, siteroot, locale)
+    sitemap:write([[
+<script src="]], siteroot, [[/prism.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
+<script src="]], siteroot, '/xmake-search-', locale , [[.js"></script>
 <script type="text/javascript">
-const documents = [
-]] .. jssearcharray .. [[
-]
-
-let miniSearch = new MiniSearch({
-    fields: ['key', 'name'],
-    storeFields: ['key', 'name', 'url'],
-    searchOptions: {
-        boost: { name: 2 },
-        prefix: true,
-        fuzzy: 0.4
-    }
-})
-
-miniSearch.addAll(documents)
-
-function changeSearch(input) {
-    var result = ""
-    var found = miniSearch.search(input)
-    found.forEach((e) => {
-        result = result + "<tr><td><a href='" + e.url + "#" + e.key + "'>" + e.name + "</a></td></tr>"
-    })
-    document.getElementById("search-table-body").innerHTML = result
-}
-</script>
-<script type="text/javascript">
-function locationHashChanged(e) {
-    var tocbody = document.getElementById("toc-body")
-    if (tocbody) {
-        var tocLinks = tocbody.getElementsByTagName("a")
-        for (let i = 0;i < tocLinks.length; i++) {
-            if (tocLinks[i].href == window.location.href) {
-                tocLinks[i].style = "font-weight:bold"
-                tocLinks[i].parentElement.style = "background-color:#d6ffed"
+    function locationHashChanged(e) {
+        var tocbody = document.getElementById("toc-body")
+        if (tocbody) {
+            var tocLinks = tocbody.getElementsByTagName("a")
+            for (let i = 0;i < tocLinks.length; i++) {
+                if (tocLinks[i].href == window.location.href) {
+                    tocLinks[i].style = "font-weight:bold"
+                    tocLinks[i].parentElement.style = "background-color:#d6ffed"
+                } else {
+                    tocLinks[i].style = ""
+                    tocLinks[i].parentElement.style = ""
+                }
+            }
+        }
+        var navLinks = document.getElementById("sidebar-nav").getElementsByTagName("a")
+        for (let i = 0;i < navLinks.length; i++) {
+            const urlbase = window.location.href.split('#')
+            if (navLinks[i].href == urlbase[0] || navLinks[i].href == window.location.href) {
+                navLinks[i].style = "font-weight:bold"
+                navLinks[i].parentElement.style = "background-color:#d6ffed"
             } else {
-                tocLinks[i].style = ""
-                tocLinks[i].parentElement.style = ""
+                navLinks[i].style = ""
+                navLinks[i].parentElement.style = ""
             }
         }
     }
-    var navLinks = document.getElementById("sidebar-nav").getElementsByTagName("a")
-    for (let i = 0;i < navLinks.length; i++) {
-        const urlbase = window.location.href.split('#')
-        if (navLinks[i].href == urlbase[0] || navLinks[i].href == window.location.href) {
-            navLinks[i].style = "font-weight:bold"
-            navLinks[i].parentElement.style = "background-color:#d6ffed"
-        } else {
-            navLinks[i].style = ""
-            navLinks[i].parentElement.style = ""
-        }
-    }
-}
-window.onhashchange = locationHashChanged;
-locationHashChanged({})
+    window.onhashchange = locationHashChanged;
+    locationHashChanged({})
 </script>
 </body>
 </html>
-]], siteroot))
+]])
 end
 
-function _build_html_page(docdir, title, db, sidebar, jssearcharray, opt)
+function _build_html_page(docdir, title, db, sidebar, opt)
     opt = opt or {}
     local locale = opt.locale or "en-us"
     local page = docdir .. ".html"
@@ -420,7 +395,7 @@ function _build_html_page(docdir, title, db, sidebar, jssearcharray, opt)
     if not isindex then
         _write_table_of_content(sitemap, db, locale, siteroot, page, apimetalist)
     end
-    _write_footer(sitemap, siteroot, jssearcharray)
+    _write_footer(sitemap, siteroot, locale)
     sitemap:close()
 end
 
@@ -438,13 +413,45 @@ function _make_search_array(db, opt)
     return jssearcharray:gsub("\\", "/")
 end
 
+function _write_search_file(db, opt)
+    local search_file_path = path.join(opt.outputdir, "xmake-search-" .. opt.locale .. ".js")
+    local search_file = io.open(search_file_path, "w")
+    assert(search_file, "cannot open file: " .. search_file_path)
+
+    search_file:write([[
+const documents = [
+]] .. _make_search_array(db, opt) .. [[
+]
+
+let miniSearch = new MiniSearch({
+    fields: ['key', 'name'],
+    storeFields: ['key', 'name', 'url'],
+    searchOptions: {
+        boost: { name: 2 },
+        prefix: true,
+        fuzzy: 0.4
+    }
+})
+
+miniSearch.addAll(documents)
+
+function changeSearch(input) {
+    var result = ""
+    var found = miniSearch.search(input)
+    found.forEach((e) => {
+        result = result + "<tr><td><a href='" + e.url + "#" + e.key + "'>" + e.name + "</a></td></tr>"
+    })
+    document.getElementById("search-table-body").innerHTML = result
+}
+]])
+end
+
 function _build_html_pages(opt)
     opt = opt or {}
     os.tryrm(opt.outputdir)
     local db = _make_db()
     for _, pagefile in ipairs(os.files(path.join(os.projectdir(), "doc", "*", "pages.lua"))) do
         opt.locale = path.basename(path.directory(pagefile))
-        local jssearcharray = _make_search_array(db, opt)
         local sidebar = '<div id="sidebar-nav">'
         for _, category in ipairs(db[opt.locale].categories) do
             sidebar = sidebar .. "\n<p>" .. category.title .. "</p>\n<ul>\n"
@@ -459,8 +466,9 @@ function _build_html_pages(opt)
         end
         sidebar = sidebar .. "</div>\n"
 
+        _write_search_file(db, opt)
         for _, page in ipairs(db[opt.locale].pages) do
-            _build_html_page(page.docdir, page.title, db, sidebar, jssearcharray, opt)
+            _build_html_page(page.docdir, page.title, db, sidebar, opt)
         end
     end
     for _, htmlfile in ipairs(os.files(path.join(os.projectdir(), "doc", "*.html"))) do
