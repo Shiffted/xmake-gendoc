@@ -140,11 +140,6 @@ li {
     background-color: white;
 }
 
-#search-table-body td {
-    width: 149px;
-    background-color: white;
-}
-
 :target {
     background-color: #b2f9d9;
 }
@@ -265,4 +260,24 @@ pre[class*=language-], code[class*=language-] {
 
 pre, code {
     background: #f8f8f8;
+}
+
+#search-results li {
+    width: 149px;
+    background-color: white;
+}
+
+#search-results h2 {
+    font-size: 17px;
+    margin: 10px 0;
+}
+
+.visually-hidden {
+    clip-path: inset(50%);
+    clip: rect(0 0 0 0);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
 }

@@ -355,9 +355,19 @@ function _build_html_page(docdir, title, db, sidebar, opt)
     _write_header(sitemap, siteroot, title, locale)
 
     sitemap:write('<div id="sidebar">\n')
+
+    local names = {
+        ["en-us"] = "Type to search",
+        ["zh-cn"] = "全文搜索在这里"
+    }
     sitemap:write([[
-<input type="search" id="search-input" placeholder="search" name="search" oninput="changeSearch(this.value);">
-<table><tbody id="search-table-body"></tbody></table>
+<div class="search-container">
+    <form class="search" role="search">
+        <label for="search-input" class="visually-hidden">Search</label>
+        <input aria-controls="search-results" autocomplete="off" id="search-input" type="search" placeholder="]], names[locale], [[">
+        <ul id="search-results" role="listbox"></ul>
+    </form>
+</div>
 ]])
     sitemap:write(_build_language_selector(db, locale, siteroot, page))
     sitemap:write(sidebar)
@@ -423,26 +433,32 @@ const documents = [
 ]] .. _make_search_array(db, opt) .. [[
 ]
 
-let miniSearch = new MiniSearch({
-    fields: ['key', 'name'],
-    storeFields: ['key', 'name', 'url'],
-    searchOptions: {
-        boost: { name: 2 },
-        prefix: true,
-        fuzzy: 0.4
-    }
+const miniSearch = new MiniSearch({
+  fields: ['key', 'name'],
+  storeFields: ['key', 'name', 'url'],
+  searchOptions: {
+    boost: { name: 2 },
+    prefix: true,
+    fuzzy: 0.4
+  }
 })
-
 miniSearch.addAll(documents)
 
 function changeSearch(input) {
-    var result = ""
-    var found = miniSearch.search(input)
-    found.forEach((e) => {
-        result = result + "<tr><td><a href='" + e.url + "#" + e.key + "'>" + e.name + "</a></td></tr>"
-    })
-    document.getElementById("search-table-body").innerHTML = result
+  const results = miniSearch.search(input)
+  document.querySelector('#search-results').innerHTML = results.map(result => {
+    return `
+      <li role="option">
+        <a href="${result.url}#${result.key}">
+          <h2>${result.name}</h2>
+        </a>
+      </li>
+    `;
+  }).join('');
 }
+document.querySelector('#search-input').addEventListener('input', (event) => {
+    changeSearch(event.target.value.trim());
+});
 ]])
 end
 
