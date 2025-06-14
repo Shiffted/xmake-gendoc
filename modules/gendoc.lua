@@ -179,19 +179,27 @@ function changeLanguage(select, currentLang) {
     return string.format(languageSelect, siteroot, page)
 end
 
-function _write_header(sitemap, siteroot, title)
-    sitemap:write(string.format([[
+function _write_header(sitemap, siteroot, title, locale)
+    local lang_tags = {
+        ["en-us"] = "en-US",
+        ["zh-cn"] = "zn-CN"
+    }
+
+    -- TODO proper page description for each category.
+    sitemap:write([[
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<html lang="]], lang_tags[locale], [[">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="resource-type" content="document">
-<link rel="stylesheet" href="%s/prism.css" type="text/css" media="all">
-<link rel="stylesheet" href="%s/xmake.css" type="text/css" media="all">
-<title>%s</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A cross-platform build utility based on Lua.">
+<link rel="stylesheet" href="]], siteroot, [[/prism.css" type="text/css" media="all">
+<link rel="stylesheet" href="]], siteroot, [[/xmake.css" type="text/css" media="all">
+<title>]], title, [[</title>
 </head>
 <body>
-]], siteroot, siteroot, title))
+]])
 end
 
 function _write_api(sitemap, db, locale, siteroot, page, apimetalist, apientrydata, markdownpath)
@@ -369,7 +377,7 @@ function _build_html_page(docdir, title, db, sidebar, jssearcharray, opt)
     local outputfile = path.join(outputfiledir, page)
     local sitemap = io.open(outputfile, 'w')
     local siteroot = opt.siteroot:gsub("\\", "/")
-    _write_header(sitemap, siteroot, title)
+    _write_header(sitemap, siteroot, title, locale)
 
     sitemap:write('<div id="sidebar">\n')
     sitemap:write([[
