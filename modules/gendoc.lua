@@ -501,6 +501,21 @@ function _build_html_pages(opt)
         io.gsub(path.join(opt.outputdir, path.filename(htmlfile)), "%${siteroot}", opt.siteroot)
     end
     os.trycp(path.join(os.projectdir(), "resources", "*"), opt.outputdir)
+
+    local sidebar_width = 300
+    local toc_width = 210
+    local max_content_width = 1000
+    local css_vars = {
+        ["sidebar-width"] = sidebar_width .. "px",
+        ["toc-width"] = toc_width .. "px",
+        ["max-content-width"] = max_content_width .. "px",
+        ["full-width"] = (sidebar_width  + toc_width + max_content_width) .. "px",
+    }
+    for _, css_file in ipairs(os.files(path.join(opt.outputdir, "*.css"))) do
+        io.gsub(css_file, "(var%((.-)%))", function(_, variable)
+            return css_vars[variable:trim()]
+        end)
+    end
 end
 
 function main()

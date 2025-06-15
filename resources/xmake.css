@@ -33,9 +33,9 @@
 body {
     --header-height: 60px;
     --sidebar-toggle-height: 48px;
-    --sidebar-width: 300px;
+    --sidebar-width: var(sidebar-width); /* Vars without "--" are set by gendoc. */
     --toc-width: 0px; /* Toc is inside sidebar for smaller screens. */
-    --max-content-width: 1000px;
+    --max-content-width: var(max-content-width);
 
     /* The actual width of the elements doesn't change, but their layout does. */
     --responsive-toc-width: var(--toc-width);
@@ -442,11 +442,34 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
 
 @media (min-width: 1200px) {
     body {
-        --toc-width: 210px;
+        --toc-width: var(toc-width);
     }
 
     .no-toc {
         --responsive-toc-width: 0px;
+    }
+}
+
+@media (min-width: var(full-width)) {
+    html {
+        scrollbar-gutter: stable;
+    }
+
+    .toggled {
+        --responsive-sidebar-width: var(--sidebar-width);
+    }
+
+    #sidebar-toggle {
+        display: none;
+    }
+
+    #sidebar {
+        bottom: 0;
+    }
+
+    .toggled #sidebar {
+        left: var(--side-margin);
+        visibility: visible;
     }
 }
 
