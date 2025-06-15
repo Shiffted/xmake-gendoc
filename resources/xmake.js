@@ -2,9 +2,9 @@
     const DOM = {
         sidebarToggle: document.querySelector('#sidebar-toggle'),
         sidebar: document.querySelector('#sidebar'),
-        sidebarNav: document.querySelector('#sidebar .sidebar-nav'),
+        sidebarNav: document.querySelector('.sidebar-nav'),
         toc: document.querySelector('#toc'),
-        tocNav: document.querySelector('#toc .toc-nav')
+        tocNav: document.querySelector('.toc-nav')
     };
 
     const mqMedium = window.matchMedia('(min-width: 769px)');

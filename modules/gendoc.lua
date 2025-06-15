@@ -316,7 +316,26 @@ function _make_sidebar_nav(db, opt)
     return sidebar_nav .. "</nav>\n"
 end
 
-function _write_sidebar(sitemap, sidebar_nav)
+function _make_toc_nav(locale, apimetalist)
+    local names = {
+        ["en-us"] = "Interfaces",
+        ["zh-cn"] = "接口"
+    }
+
+    local toc_nav = [[
+<nav class="toc-nav">
+    <p>]] .. names[locale] .. [[</p>
+    <ul>
+]]
+    for _, apimetadata in ipairs(apimetalist) do
+        if apimetadata.api ~= "false" then
+            toc_nav = toc_nav .. "        <li><a href=\"#" .. apimetadata.key .. "\">" .. apimetadata.name .. "</a></li>\n"
+        end
+    end
+    return toc_nav .. "    </ul>\n</nav>\n"
+end
+
+function _write_sidebar(sitemap, sidebar_nav, toc_nav)
     sitemap:write([[
 <button id="sidebar-toggle" aria-controls="sidebar" aria-label="Menu">
     <div class="menu-bars">
@@ -327,34 +346,15 @@ function _write_sidebar(sitemap, sidebar_nav)
     <div class="sidebar-toggle-bg"></div>
 </button>
 <aside id="sidebar">
-    ]], sidebar_nav, [[
+    ]], toc_nav, sidebar_nav, [[
 </aside>
 ]])
 end
 
-function _write_table_of_content(sitemap, db, locale, siteroot, page, apimetalist)
-    local names = {
-        ["en-us"] = "Interfaces",
-        ["zh-cn"] = "接口"
-    }
-    local interfaces = names[locale]
-
+function _write_table_of_content(sitemap, toc_nav)
     sitemap:write([[
 <aside id="toc">
-    <nav class="toc-nav">
-        <p>]], interfaces, [[</p>
-        <ul>
-]])
-
-    for _, apimetadata in ipairs(apimetalist) do
-        if apimetadata.api ~= "false" then
-            sitemap:write("            <li><a href=\"#", apimetadata.key, "\">", apimetadata.name, "</a></li>\n")
-        end
-    end
-
-    sitemap:write([[
-        </ul>
-    </nav>
+    ]], toc_nav, [[
 </aside>
 ]])
 end
@@ -385,10 +385,6 @@ function _build_html_page(docdir, title, db, sidebar_nav, opt)
     local sitemap = io.open(outputfile, 'w')
     assert(sitemap, "cannot open file: " .. outputfile)
 
-    _write_head(sitemap, siteroot, title, locale, not isindex)
-    _write_header(sitemap, siteroot, db, locale, page)
-    _write_sidebar(sitemap, sidebar_nav)
-
     local docroot = path.join(os.projectdir(), "doc")
     local localeroot = path.join(docroot, locale)
     local files = {}
@@ -415,8 +411,12 @@ function _build_html_page(docdir, title, db, sidebar_nav, opt)
         table.insert(html_content, "</article>\n")
     end
 
+    local toc_nav = isindex and "" or _make_toc_nav(locale, apimetalist)
+    _write_head(sitemap, siteroot, title, locale, not isindex)
+    _write_header(sitemap, siteroot, db, locale, page)
+    _write_sidebar(sitemap, sidebar_nav, toc_nav)
     if not isindex then
-        _write_table_of_content(sitemap, db, locale, siteroot, page, apimetalist)
+        _write_table_of_content(sitemap, "") -- toc-nav is in sidebar by default.
     end
     sitemap:write([[
 <div class="content">
@@ -425,7 +425,6 @@ function _build_html_page(docdir, title, db, sidebar_nav, opt)
     </main>
 </div>
 ]])
-
     _write_footer(sitemap, siteroot, locale)
     sitemap:close()
 end

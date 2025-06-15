@@ -46,7 +46,7 @@ body {
     --responsive-sidebar-width: 0px; /* Sidebar is hidden by default for smaller screens. */
 
     --stable-side-margin: max(0px, (100% - var(--sidebar-width) - var(--toc-width) - var(--max-content-width)) / 2);
-    --side-margin: max(0px, (100% - var(--responsive-sidebar-width) - var(--responsive-toc-width) - var(--max-content-width)) / 2);
+    --side-margin: max(0px, (100% - var(--responsive-sidebar-width) - var(--toc-width) - var(--max-content-width)) / 2);
 
     --transform: none; /* We use transform for smaller screens to slide the sidebar in and out. */
 }
