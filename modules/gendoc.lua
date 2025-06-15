@@ -292,7 +292,7 @@ function _write_header(sitemap, siteroot, db, locale, page)
         <form role="search" class="search">
             <label for="search-input" class="visually-hidden">Search</label>
             <input type="search" id="search-input" placeholder="]], search_placeholder_names[locale], [[" name="search" autocomplete="off" aria-controls="search-results">
-            <div class="search-results"></div>
+            <div id="search-results"></div>
         </form>
     </div>
     ]], _build_language_selector(db, locale, siteroot, page), [[
