@@ -300,6 +300,30 @@ function _write_header(sitemap, siteroot, db, locale, page)
 ]])
 end
 
+function _make_sidebar_nav(db, opt)
+    local sidebar_nav = "<nav class=\"sidebar-nav\">"
+    for _, category in ipairs(db[opt.locale].categories) do
+        sidebar_nav = sidebar_nav .. "<section>\n<p>" .. category.title .. "</p>\n<ul>\n"
+        for _, page in ipairs(category.pages) do
+            local pagepath = page.docdir
+            if pagepath == "." then
+                pagepath = page.title
+            end
+            sidebar_nav = sidebar_nav .. "<li><a href=\"" .. _join_link(opt.siteroot, opt.locale, pagepath) .. ".html\">" .. page.title .. "</a></li>\n"
+        end
+        sidebar_nav = sidebar_nav .. "</ul>\n</section>\n"
+    end
+    return sidebar_nav .. "</nav>\n"
+end
+
+function _write_sidebar(sitemap, sidebar_nav)
+    sitemap:write([[
+<aside id="sidebar">
+]], sidebar_nav, [[
+</aside>
+]])
+end
+
 function _write_table_of_content(sitemap, db, locale, siteroot, page, apimetalist)
     local names = {
         ["en-us"] = "Interfaces",
@@ -337,7 +361,7 @@ function _write_footer(sitemap, siteroot, locale)
 ]])
 end
 
-function _build_html_page(docdir, title, db, sidebar, opt)
+function _build_html_page(docdir, title, db, sidebar_nav, opt)
     opt = opt or {}
     local locale = opt.locale or "en-us"
     local page = docdir .. ".html"
@@ -354,10 +378,7 @@ function _build_html_page(docdir, title, db, sidebar, opt)
 
     _write_head(sitemap, siteroot, title, locale, not isindex)
     _write_header(sitemap, siteroot, db, locale, page)
-
-    sitemap:write('<div id="sidebar">\n')
-    sitemap:write(sidebar)
-    sitemap:write('</div>\n')
+    _write_sidebar(sitemap, sidebar_nav)
 
     local docroot = path.join(os.projectdir(), "doc")
     local localeroot = path.join(docroot, locale)
@@ -459,23 +480,12 @@ function _build_html_pages(opt)
     local db = _make_db()
     for _, pagefile in ipairs(os.files(path.join(os.projectdir(), "doc", "*", "pages.lua"))) do
         opt.locale = path.basename(path.directory(pagefile))
-        local sidebar = '<div id="sidebar-nav">'
-        for _, category in ipairs(db[opt.locale].categories) do
-            sidebar = sidebar .. "\n<p>" .. category.title .. "</p>\n<ul>\n"
-            for _, page in ipairs(category.pages) do
-                local pagepath = page.docdir
-                if pagepath == "." then
-                    pagepath = page.title
-                end
-                sidebar = sidebar .. '<li><a href="' .. _join_link(opt.siteroot, opt.locale, pagepath .. ".html") .. '">' .. page.title .. "</a></li>\n"
-            end
-            sidebar = sidebar .. "</ul>\n"
-        end
-        sidebar = sidebar .. "</div>\n"
 
         _write_search_file(db, opt)
+
+        local sidebar_nav = _make_sidebar_nav(db, opt)
         for _, page in ipairs(db[opt.locale].pages) do
-            _build_html_page(page.docdir, page.title, db, sidebar, opt)
+            _build_html_page(page.docdir, page.title, db, sidebar_nav, opt)
         end
     end
     for _, htmlfile in ipairs(os.files(path.join(os.projectdir(), "doc", "*.html"))) do
