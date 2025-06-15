@@ -31,7 +31,7 @@
 
     --header-height: 60px;
     --sidebar-width: 300px;
-    --toc-width: 210px;
+    --toc-width: 0px;
 }
 
 .no-toc {
@@ -355,4 +355,11 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
 .language-css .token.string, .style .token.string, .token.entity, .token.url, .token.atrule, .token.regex, .token.operator {
     color: var(--color-code-operator);
     background: 0 0;
+}
+
+
+@media (min-width: 1200px) {
+    :root {
+        --toc-width: 210px;
+    }
 }
