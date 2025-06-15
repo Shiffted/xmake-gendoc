@@ -175,7 +175,12 @@ li {
     background-color: var(--color-sidebar);
     border: 1px solid var(--color-border);
     overflow: auto;
+    visibility: hidden;
     transform: var(--transform);
+}
+
+.toggled #sidebar {
+    visibility: visible;
 }
 
 #toc {
@@ -426,10 +431,12 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
 
     #sidebar {
         left: var(--side-margin);
+        visibility: visible;
     }
 
     .toggled #sidebar {
         left: calc(-1 * var(--sidebar-width));
+        visibility: hidden;
     }
 }
 
