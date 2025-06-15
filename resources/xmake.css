@@ -26,6 +26,7 @@
     --color-code-variable: hsl(207, 62%, 53%);
     --color-code-important: hsl(14, 71%, 46%);
     --color-code-operator: hsl(194, 71%, 46%);
+    --color-code-inserted-border: hsl(229, 37%, 20%);
 
     --radius: 0.25rem;
 }
@@ -401,7 +402,7 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
 }
 
 .token.inserted {
-    border-bottom: 1px dotted hsl(229, 37%, 20%);
+    border-bottom: 1px dotted var(--color-code-inserted-border);
     text-decoration-line: none;
 }
 
