@@ -34,6 +34,10 @@
     --toc-width: 210px;
 }
 
+.no-toc {
+    --toc-width: 0;
+}
+
 
 body {
     background: var(--color-bg);

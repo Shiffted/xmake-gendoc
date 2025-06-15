@@ -179,7 +179,7 @@ function changeLanguage(select, currentLang) {
     return string.format(languageSelect, siteroot, page)
 end
 
-function _write_head(sitemap, siteroot, title, locale)
+function _write_head(sitemap, siteroot, title, locale, has_toc)
     local lang_tags = {
         ["en-us"] = "en-US",
         ["zh-cn"] = "zn-CN"
@@ -198,7 +198,7 @@ function _write_head(sitemap, siteroot, title, locale)
 <link rel="stylesheet" href="]], siteroot, [[/xmake.css" type="text/css" media="all">
 <title>]], title, [[</title>
 </head>
-<body>
+<body]], has_toc and "" or " class=\"no-toc\"", [[>
 ]])
 end
 
@@ -352,7 +352,7 @@ function _build_html_page(docdir, title, db, sidebar, opt)
     local sitemap = io.open(outputfile, 'w')
     assert(sitemap, "cannot open file: " .. outputfile)
 
-    _write_head(sitemap, siteroot, title, locale)
+    _write_head(sitemap, siteroot, title, locale, not isindex)
     _write_header(sitemap, siteroot, db, locale, page)
 
     sitemap:write('<div id="sidebar">\n')
