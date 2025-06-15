@@ -330,24 +330,25 @@ function _write_table_of_content(sitemap, db, locale, siteroot, page, apimetalis
         ["zh-cn"] = "接口"
     }
     local interfaces = names[locale]
-    sitemap:write(string.format([[
-<div id="toc">
-<table>
-    <thead>
-        <tr><td>%s</td></tr>
-    </thead>
-    <tbody id="toc-body">]] .. "\n", interfaces))
 
-        for _, apimetadata in ipairs(apimetalist) do
-            if apimetadata.api ~= "false" then
-                sitemap:write('        <tr><td><a href="' .. _join_link(siteroot, locale, page) .. '#' .. apimetadata.key .. '">' .. apimetadata.name .. "</a></td></tr>\n")
-            end
+    sitemap:write([[
+<aside id="toc">
+    <nav class="toc-nav">
+        <p>]], interfaces, [[</p>
+        <ul>
+]])
+
+    for _, apimetadata in ipairs(apimetalist) do
+        if apimetadata.api ~= "false" then
+            sitemap:write("            <li><a href=\"#", apimetadata.key, "\">", apimetadata.name, "</a></li>\n")
         end
+    end
 
-        sitemap:write([[
-    </tbody>
-</table>
-</div>]])
+    sitemap:write([[
+        </ul>
+    </nav>
+</aside>
+]])
 end
 
 function _write_footer(sitemap, siteroot, locale)
