@@ -324,6 +324,7 @@ function _write_sidebar(sitemap, sidebar_nav)
         <div class="menu-bar"></div>
         <div class="menu-bar"></div>
     </div>
+    <div class="sidebar-toggle-bg"></div>
 </button>
 <aside id="sidebar">
     ]], sidebar_nav, [[

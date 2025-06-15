@@ -153,21 +153,29 @@ li {
     position: fixed;
     bottom: 0;
     left: 0;
-    box-sizing: border-box;
-    height: var(--sidebar-toggle-height);
-    width: 0;
 
-    background-color: var(--color-border);
     border: 0;
     cursor: pointer;
     padding: 0;
     z-index: 1000;
 }
 
+.sidebar-toggle-bg {
+    position: absolute;
+    top: 0;
+    left: calc(-1 * var(--sidebar-width));
+    height: 100%;
+    width: var(--sidebar-width);
+
+    background-color: var(--color-border);
+    transform: var(--transform);
+    z-index: -1;
+}
+
 #sidebar {
     position: fixed;
     top: var(--header-height);
-    bottom: 0;
+    bottom: var(--sidebar-toggle-height);
     left: calc(-1 * var(--sidebar-width));
     box-sizing: border-box;
     width: var(--sidebar-width);
@@ -429,13 +437,19 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
         --transform: none;
     }
 
-    #sidebar {
+    #sidebar, .sidebar-toggle-bg {
         left: var(--side-margin);
+    }
+
+    .toggled #sidebar, .toggled .sidebar-toggle-bg {
+        left: calc(-1 * var(--sidebar-width));
+    }
+
+    #sidebar {
         visibility: visible;
     }
 
     .toggled #sidebar {
-        left: calc(-1 * var(--sidebar-width));
         visibility: hidden;
     }
 }
@@ -478,7 +492,7 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
         scroll-behavior: smooth;
     }
 
-    #header, #sidebar, #toc, .content {
+    #header, #sidebar, #toc, .content, .sidebar-toggle-bg {
         transition-duration: .25s;
         transition-timing-function: ease-in-out;
     }
@@ -493,5 +507,9 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
 
     .content {
         transition-property: left, right, transform;
+    }
+
+    .sidebar-toggle-bg {
+        transition-property: left, transform;
     }
 }
