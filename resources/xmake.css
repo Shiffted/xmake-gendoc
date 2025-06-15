@@ -502,7 +502,8 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
     }
 
     #toc {
-        transition-property: right;
+        /* TODO: use animation similar to sidebar toggle when moving toc instead of using width. */
+        transition-property: right, width;
     }
 
     .content {
