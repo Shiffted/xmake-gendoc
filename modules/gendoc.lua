@@ -302,9 +302,9 @@ end
 function _write_footer(sitemap, siteroot, locale)
     sitemap:write([[
 <script src="]], siteroot, [[/xmake.js"></script>
-<script src="]], siteroot, [[/prism.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
-<script src="]], siteroot, '/xmake-search-', locale , [[.js"></script>
+<script defer src="]], siteroot, [[/prism.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
+<script defer src="]], siteroot, '/xmake-search-', locale , [[.js"></script>
 </body>
 </html>
 ]])
