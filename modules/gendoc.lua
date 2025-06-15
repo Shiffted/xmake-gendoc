@@ -512,8 +512,9 @@ function _build_html_pages(opt)
         ["max-content-width"] = max_content_width .. "px",
         ["full-width"] = (sidebar_width  + toc_width + max_content_width) .. "px",
     }
-    for _, css_file in ipairs(os.files(path.join(opt.outputdir, "*.css"))) do
-        io.gsub(css_file, "(var%((.-)%))", function(_, variable)
+    for _, css_file in ipairs(os.files(path.join(os.projectdir(), "resources", "**.css"))) do
+        local outputfile = path.join(opt.outputdir, path.relative(css_file, "resources"))
+        io.gsub(outputfile, "(var%((.-)%))", function(_, variable)
             return css_vars[variable:trim()]
         end)
     end
