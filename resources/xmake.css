@@ -32,6 +32,9 @@
     --header-height: 60px;
     --sidebar-width: 300px;
     --toc-width: 0px;
+    --max-content-width: 1000px;
+
+    --side-margin: max(0px, (100% - var(--sidebar-width) - var(--toc-width) - var(--max-content-width)) / 2);
 }
 
 .no-toc {
@@ -131,6 +134,7 @@ li {
     border-bottom: 1px solid var(--color-border);
     display: flex;
     flex-direction: row;
+    padding: 0 var(--side-margin);
     z-index: 1000;
 }
 
@@ -138,7 +142,7 @@ li {
     position: fixed;
     top: var(--header-height);
     bottom: 0;
-    left: 0;
+    left: var(--side-margin);
     box-sizing: border-box;
     width: var(--sidebar-width);
 
@@ -150,7 +154,7 @@ li {
 #toc {
     position: fixed;
     top: var(--header-height);
-    right: 0;
+    right: var(--side-margin);
     bottom: 0;
     box-sizing: border-box;
     width: var(--toc-width);
@@ -162,8 +166,8 @@ li {
 .content {
     position: absolute;
     top: var(--header-height);
-    right: var(--toc-width);
-    left: var(--sidebar-width);
+    right: calc(var(--side-margin) + var(--toc-width));
+    left: calc(var(--side-margin) + var(--sidebar-width));
     box-sizing: border-box;
 }
 
