@@ -1,0 +1,23 @@
+@font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: swap;
+    src: url(L0x5DF4xlVMF-BfR8bXMIjhLq38.woff2) format('woff2');
+}
+
+@font-face {
+    font-family: 'Source Sans 3';
+    font-style: normal;
+    font-weight: 200 900;
+    font-display: swap;
+    src: url(nwpStKy2OAdR1K-IwhWudF-R3w8aZQ.woff2) format('woff2');
+}
+
+@font-face {
+    font-family: 'Source Sans 3';
+    font-style: italic;
+    font-weight: 200 900;
+    font-display: swap;
+    src: url(nwpMtKy2OAdR1K-IwhWudF-R3woqZ-LY.woff2) format('woff2');
+}

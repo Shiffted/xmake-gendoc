@@ -1,7 +1,9 @@
+@import url(fonts/xmake-fonts.css);
+
 body {
     background: var(--bg);
     color: var(--fg);
-    font-family: Source Sans Pro, Helvetica Neue, Arial, sans-serif;
+    font-family: "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
     font-size: 15px;
     color: #34495e;
     background-color: white;
@@ -148,6 +150,10 @@ p.warn {
     background: rgba(66, 185, 131, .1);
     border-radius: 2px;
     padding: 1rem;
+}
+
+pre, code, pre[class*=language-], code[class*=language-] {
+    font-family: "Roboto Mono", Monaco, courier, monospace;
 }
 
 .token.cdata, .token.comment, .token.doctype, .token.prolog {
