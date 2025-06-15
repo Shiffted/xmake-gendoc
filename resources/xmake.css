@@ -28,17 +28,27 @@
     --color-code-operator: hsl(194, 71%, 46%);
 
     --radius: 0.25rem;
-
-    --header-height: 60px;
-    --sidebar-width: 300px;
-    --toc-width: 0px;
-    --max-content-width: 1000px;
-
-    --side-margin: max(0px, (100% - var(--sidebar-width) - var(--toc-width) - var(--max-content-width)) / 2);
 }
 
-.no-toc {
-    --toc-width: 0;
+body {
+    --header-height: 60px;
+    --sidebar-toggle-height: 48px;
+    --sidebar-width: 300px;
+    --toc-width: 0px; /* Toc is inside sidebar for smaller screens. */
+    --max-content-width: 1000px;
+
+    /* The actual width of the elements doesn't change, but their layout does. */
+    --responsive-toc-width: var(--toc-width);
+    --responsive-sidebar-width: 0px; /* Sidebar is hidden by default for smaller screens. */
+
+    --stable-side-margin: max(0px, (100% - var(--sidebar-width) - var(--toc-width) - var(--max-content-width)) / 2);
+    --side-margin: max(0px, (100% - var(--responsive-sidebar-width) - var(--responsive-toc-width) - var(--max-content-width)) / 2);
+
+    --transform: none; /* We use transform for smaller screens to slide the sidebar in and out. */
+}
+
+.toggled {
+    --transform: translateX(var(--sidebar-width));
 }
 
 
@@ -47,8 +57,9 @@ body {
     color: var(--color-text);
     font-family: "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
     font-size: 15px;
-    padding: 0;
     margin: 0;
+    overflow-x: hidden;
+    padding: 0;
 }
 
 a {
@@ -134,7 +145,22 @@ li {
     border-bottom: 1px solid var(--color-border);
     display: flex;
     flex-direction: row;
-    padding: 0 var(--side-margin);
+    padding: 0 var(--stable-side-margin);
+    z-index: 1000;
+}
+
+#sidebar-toggle {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    box-sizing: border-box;
+    height: var(--sidebar-toggle-height);
+    width: 0;
+
+    background-color: var(--color-border);
+    border: 0;
+    cursor: pointer;
+    padding: 0;
     z-index: 1000;
 }
 
@@ -142,13 +168,14 @@ li {
     position: fixed;
     top: var(--header-height);
     bottom: 0;
-    left: var(--side-margin);
+    left: calc(-1 * var(--sidebar-width));
     box-sizing: border-box;
     width: var(--sidebar-width);
 
     background-color: var(--color-sidebar);
     border: 1px solid var(--color-border);
     overflow: auto;
+    transform: var(--transform);
 }
 
 #toc {
@@ -166,11 +193,13 @@ li {
 .content {
     position: absolute;
     top: var(--header-height);
-    right: calc(var(--side-margin) + var(--toc-width));
-    left: calc(var(--side-margin) + var(--sidebar-width));
+    right: calc(var(--side-margin) + var(--responsive-toc-width));
+    left: calc(var(--side-margin) + var(--responsive-sidebar-width));
     box-sizing: border-box;
-}
+    max-width: var(--max-content-width);
 
+    transform: var(--transform);
+}
 
 .app-name {
     margin: auto 25px;
@@ -182,6 +211,29 @@ li {
     margin: 0;
     padding: 0;
     text-align: center;
+}
+
+.menu-bars {
+    --menu-bar-height: 2px;
+    --menu-bar-width: 18px;
+    --menu-bar-margin: 4px;
+
+    box-sizing: border-box;
+    height: var(--sidebar-toggle-height);
+    width: var(--sidebar-toggle-height);
+
+    background-color: inherit;
+    display: block;
+    padding: calc((var(--sidebar-toggle-height) - (3 * var(--menu-bar-height) + 2 * var(--menu-bar-margin))) / 2) 0 0 calc((var(--sidebar-toggle-height) - var(--menu-bar-width)) / 2);
+}
+
+.menu-bar {
+    height: var(--menu-bar-height);
+    width: var(--menu-bar-width);
+
+    background-color: var(--color-theme);
+    display: block;
+    margin-bottom: var(--menu-bar-margin);
 }
 
 #search-results li {
@@ -362,8 +414,31 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
 }
 
 
+@media (min-width: 769px) {
+    body {
+        --responsive-sidebar-width: var(--sidebar-width);
+    }
+
+    .toggled {
+        --responsive-sidebar-width: 0px;
+        --transform: none;
+    }
+
+    #sidebar {
+        left: var(--side-margin);
+    }
+
+    .toggled #sidebar {
+        left: calc(-1 * var(--sidebar-width));
+    }
+}
+
 @media (min-width: 1200px) {
-    :root {
+    body {
         --toc-width: 210px;
+    }
+
+    .no-toc {
+        --responsive-toc-width: 0px;
     }
 }

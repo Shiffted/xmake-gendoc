@@ -318,6 +318,13 @@ end
 
 function _write_sidebar(sitemap, sidebar_nav)
     sitemap:write([[
+<button id="sidebar-toggle" aria-controls="sidebar" aria-label="Menu">
+    <div class="menu-bars">
+        <div class="menu-bar"></div>
+        <div class="menu-bar"></div>
+        <div class="menu-bar"></div>
+    </div>
+</button>
 <aside id="sidebar">
     ]], sidebar_nav, [[
 </aside>

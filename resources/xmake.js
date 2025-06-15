@@ -1,5 +1,6 @@
 (() => {
     const DOM = {
+        sidebarToggle: document.querySelector('#sidebar-toggle'),
         sidebar: document.querySelector('#sidebar'),
         sidebarNav: document.querySelector('#sidebar .sidebar-nav'),
         toc: document.querySelector('#toc'),
@@ -7,6 +8,12 @@
     };
 
     const mqXl = window.matchMedia('(min-width: 1200px)');
+
+    function toggleSidebar() {
+        document.body.classList.toggle('toggled');
+        const isExpanded = DOM.sidebarToggle.getAttribute('aria-expanded') === 'true';
+        DOM.sidebarToggle.setAttribute('aria-expanded', !isExpanded);
+    }
 
     function updateActiveSidebarLink() {
         if (!DOM.sidebarNav) return;
@@ -51,6 +58,7 @@
         updateActiveTocLink();
         updateTocPosition();
 
+        DOM.sidebarToggle?.addEventListener('click', toggleSidebar);
         window.addEventListener('hashchange', updateActiveTocLink);
         mqXl.addEventListener('change', updateTocPosition);
     }
