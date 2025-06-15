@@ -291,7 +291,7 @@ function _write_header(sitemap, siteroot, db, locale, page)
     <div id="search-container">
         <form role="search" class="search">
             <label for="search-input" class="visually-hidden">Search</label>
-            <input type="search" id="search-input" placeholder="]], search_placeholder_names[locale], [[" name="search" autocomplete="off" aria-controls="search-results">
+            <input id="search-input" type="search" placeholder="]], search_placeholder_names[locale], [[" aria-controls="search-results" name="search" autocomplete="off">
             <div id="search-results"></div>
         </form>
     </div>
@@ -319,7 +319,7 @@ end
 function _write_sidebar(sitemap, sidebar_nav)
     sitemap:write([[
 <aside id="sidebar">
-]], sidebar_nav, [[
+    ]], sidebar_nav, [[
 </aside>
 ]])
 end
