@@ -301,39 +301,10 @@ end
 
 function _write_footer(sitemap, siteroot, locale)
     sitemap:write([[
+<script src="]], siteroot, [[/xmake.js"></script>
 <script src="]], siteroot, [[/prism.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
 <script src="]], siteroot, '/xmake-search-', locale , [[.js"></script>
-<script type="text/javascript">
-    function locationHashChanged(e) {
-        var tocbody = document.getElementById("toc-body")
-        if (tocbody) {
-            var tocLinks = tocbody.getElementsByTagName("a")
-            for (let i = 0;i < tocLinks.length; i++) {
-                if (tocLinks[i].href == window.location.href) {
-                    tocLinks[i].style = "font-weight:bold"
-                    tocLinks[i].parentElement.style = "background-color:#d6ffed"
-                } else {
-                    tocLinks[i].style = ""
-                    tocLinks[i].parentElement.style = ""
-                }
-            }
-        }
-        var navLinks = document.getElementById("sidebar-nav").getElementsByTagName("a")
-        for (let i = 0;i < navLinks.length; i++) {
-            const urlbase = window.location.href.split('#')
-            if (navLinks[i].href == urlbase[0] || navLinks[i].href == window.location.href) {
-                navLinks[i].style = "font-weight:bold"
-                navLinks[i].parentElement.style = "background-color:#d6ffed"
-            } else {
-                navLinks[i].style = ""
-                navLinks[i].parentElement.style = ""
-            }
-        }
-    }
-    window.onhashchange = locationHashChanged;
-    locationHashChanged({})
-</script>
 </body>
 </html>
 ]])
