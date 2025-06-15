@@ -202,7 +202,7 @@ function _write_head(sitemap, siteroot, title, locale)
 ]])
 end
 
-function _write_api(sitemap, db, locale, siteroot, page, apimetalist, apientrydata, markdownpath)
+function _build_api(db, locale, siteroot, page, apimetalist, apientrydata, markdownpath)
     local apimetadata, content, includepath = _load_apimetadata(apientrydata, {locale = locale})
     assert(apimetadata.api ~= nil, "entry api is nil value")
     assert(apimetadata.key ~= nil, "entry key is nil value")
@@ -270,7 +270,7 @@ function _write_api(sitemap, db, locale, siteroot, page, apimetalist, apientryda
         htmldata = htmldata:gsub("%${link [^%s${%}]+ [^%{%}]+}", _make_link(db, link, locale, siteroot, text), 1)
     until not findstart
 
-    sitemap:write(htmldata)
+    return htmldata
 end
 
 function _write_header(sitemap, siteroot, db, locale, page)
@@ -346,10 +346,11 @@ function _build_html_page(docdir, title, db, sidebar, opt)
         page = "index.html"
         isindex = true
     end
+    local siteroot = opt.siteroot:gsub("\\", "/")
     local outputfiledir = path.join(opt.outputdir or "", locale)
     local outputfile = path.join(outputfiledir, page)
     local sitemap = io.open(outputfile, 'w')
-    local siteroot = opt.siteroot:gsub("\\", "/")
+    assert(sitemap, "cannot open file: " .. outputfile)
 
     _write_head(sitemap, siteroot, title, locale)
     _write_header(sitemap, siteroot, db, locale, page)
@@ -358,9 +359,6 @@ function _build_html_page(docdir, title, db, sidebar, opt)
     sitemap:write(sidebar)
     sitemap:write('</div>\n')
 
-    sitemap:write('<div id="content">\n')
-    local isfirst = true
-    local apimetalist = {}
     local docroot = path.join(os.projectdir(), "doc")
     local localeroot = path.join(docroot, locale)
     local files = {}
@@ -375,21 +373,29 @@ function _build_html_page(docdir, title, db, sidebar, opt)
         end
     end
     table.sort(files)
+
+    local html_content = {}
+    local apimetalist = {}
     for _, file in ipairs(files) do
-        if isfirst then
-            isfirst = false
-        else
-            sitemap:write("<hr />")
-        end
         vprint("loading " .. file)
         local apientrydata = io.readfile(file)
         local markdownpath = path.relative(file, docroot)
-        _write_api(sitemap, db, locale, siteroot, page, apimetalist, apientrydata, markdownpath)
+        table.insert(html_content, "<article>\n")
+        table.insert(html_content, _build_api(db, locale, siteroot, page, apimetalist, apientrydata, markdownpath))
+        table.insert(html_content, "</article>\n")
     end
-    sitemap:write("</div>\n")
+
     if not isindex then
         _write_table_of_content(sitemap, db, locale, siteroot, page, apimetalist)
     end
+    sitemap:write([[
+<div class="content">
+    <main id="md-content">
+        ]], table.concat(html_content), [[
+    </main>
+</div>
+]])
+
     _write_footer(sitemap, siteroot, locale)
     sitemap:close()
 end

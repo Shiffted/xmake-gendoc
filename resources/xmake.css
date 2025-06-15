@@ -88,7 +88,7 @@ li {
     padding-top: 2px;
 }
 
-#sidebar, #content, #toc {
+#sidebar, #md-content, #toc {
     padding: 10px;
     display: inline-block;
     overflow: auto;
@@ -161,7 +161,7 @@ li {
     list-style-type: none;
 }
 
-#content {
+#md-content {
     position: absolute;
     left: 270px;
     right: 250px;
