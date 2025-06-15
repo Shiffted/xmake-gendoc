@@ -487,6 +487,7 @@ function _build_html_pages(opt)
     opt = opt or {}
     os.tryrm(opt.outputdir)
     local db = _make_db()
+
     for _, pagefile in ipairs(os.files(path.join(os.projectdir(), "doc", "*", "pages.lua"))) do
         opt.locale = path.basename(path.directory(pagefile))
 
@@ -497,10 +498,12 @@ function _build_html_pages(opt)
             _build_html_page(page.docdir, page.title, db, sidebar_nav, opt)
         end
     end
+
     for _, htmlfile in ipairs(os.files(path.join(os.projectdir(), "doc", "*.html"))) do
         os.trycp(htmlfile, opt.outputdir)
         io.gsub(path.join(opt.outputdir, path.filename(htmlfile)), "%${siteroot}", opt.siteroot)
     end
+
     os.trycp(path.join(os.projectdir(), "resources", "*"), opt.outputdir)
 
     local sidebar_width = 300
@@ -510,7 +513,7 @@ function _build_html_pages(opt)
         ["sidebar-width"] = sidebar_width .. "px",
         ["toc-width"] = toc_width .. "px",
         ["max-content-width"] = max_content_width .. "px",
-        ["full-width"] = (sidebar_width  + toc_width + max_content_width) .. "px",
+        ["full-width"] = (sidebar_width + toc_width + max_content_width) .. "px",
     }
     for _, css_file in ipairs(os.files(path.join(os.projectdir(), "resources", "**.css"))) do
         local outputfile = path.join(opt.outputdir, path.relative(css_file, "resources"))
