@@ -449,3 +449,26 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
         --responsive-toc-width: 0px;
     }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    #header, #sidebar, #toc, .content {
+        transition-duration: .25s;
+        transition-timing-function: ease-in-out;
+    }
+
+    #sidebar {
+        transition-property: left, transform, visibility;
+    }
+
+    #toc {
+        transition-property: right;
+    }
+
+    .content {
+        transition-property: left, right, transform;
+    }
+}
