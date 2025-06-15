@@ -10,6 +10,7 @@
     --color-header-bg: hsla(0, 0%, 100%, 0.8);
 
     --color-code-bg: hsl(0, 0%, 97%);
+    --color-code-shadow: hsl(0, 0%, 100%);
     --color-code-text: hsl(27, 100%, 46%);
     --color-codeblock-text: hsl(0, 0%, 32%);
     --color-code-function: hsl(27, 100%, 46%);
@@ -25,6 +26,8 @@
     --color-code-variable: hsl(207, 62%, 53%);
     --color-code-important: hsl(14, 71%, 46%);
     --color-code-operator: hsl(194, 71%, 46%);
+
+    --radius: 0.25rem;
 }
 
 body {
@@ -48,27 +51,6 @@ h2 a, h3 a {
 
 #sidebar a {
     color: inherit;
-}
-
-code {
-    background-color: var(--color-code-bg);
-    font-size: .8rem;
-    margin: 0 2px;
-    padding: 3px 5px;
-    white-space: pre-wrap;
-}
-
-code, code a {
-    color: var(--color-code-text);
-}
-
-pre code a {
-    color: var(--color-codeblock-text);
-}
-
-pre code {
-    padding: 0;
-    margin: 0;
 }
 
 table {
@@ -206,8 +188,83 @@ li {
     background-color: var(--color-target);
 }
 
+#search-results li {
+    width: 149px;
+}
+
+#search-results h2 {
+    font-size: 17px;
+    margin: 10px 0;
+}
+
+.visually-hidden {
+    clip-path: inset(50%);
+    clip: rect(0 0 0 0);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
 pre, code, pre[class*=language-], code[class*=language-] {
+    background-color: var(--color-code-bg);
+    border-radius: var(--radius);
     font-family: "Roboto Mono", Monaco, courier, monospace;
+    text-shadow: 0 1px var(--color-code-shadow);
+}
+
+pre, pre[class*=language-] {
+    line-height: 1.5rem;
+    margin: 1.2em 0;
+    padding: 0 1.4rem;
+}
+
+code, code[class*=language-] {
+    color: var(--color-code-text);
+    font-size: .8rem;
+    margin: 0 2px;
+    padding: 3px 5px;
+    white-space: pre-wrap;
+}
+
+pre>code, pre>code[class*=language-] {
+    color: var(--color-codeblock-text);
+    display: block;
+    overflow: auto;
+    padding: 2.2em 5px;
+    white-space: inherit;
+}
+
+code a {
+    color: inherit;
+}
+
+code .token {
+    min-height: 1.5rem;
+    position: relative;
+    left: auto;
+}
+
+code[class*=language-] ::selection, code[class*=language-]::selection, pre[class*=language-] ::selection, pre[class*=language-]::selection {
+    text-shadow: none;
+    background: revert;
+}
+
+.token.function {
+    color: var(--color-code-function);
+}
+
+.token.keyword {
+    color: var(--color-code-keyword);
+}
+
+.token.punctuation {
+    color: var(--color-code-punctuation);
+}
+
+.token.string, .token.attr-value {
+    color: var(--color-code-string);
 }
 
 .token.cdata, .token.comment, .token.doctype, .token.prolog {
@@ -226,61 +283,29 @@ pre, code, pre[class*=language-], code[class*=language-] {
     color: var(--color-code-number);
 }
 
-.token.punctuation {
-    color: var(--color-code-punctuation);
-}
-
 .token.property {
     color: var(--color-code-property);
 }
 
-.token.tag {
+.token.tag, .token.attr-name {
     color: var(--color-code-tag);
-}
-
-.token.string {
-    color: var(--color-code-string);
 }
 
 .token.selector {
     color: var(--color-code-selector);
 }
 
-.token.attr-name {
-    color: var(--color-code-tag);
-}
-
-.language-css .token.string, .style .token.string, .token.entity, .token.url {
-    color: var(--color-code-operator);
-}
-
-.token.attr-value, .token.control, .token.directive, .token.unit {
-    color: var(--color-code-string);
-}
-
-.token.keyword {
-    color: var(--color-code-keyword);
-}
-
-.token.function, .token.keyword {
-    color: var(--color-code-function);
-}
-
-.token.atrule, .token.regex, .token.statement {
-    color: var(--color-code-operator);
-}
-
-.token.placeholder, .token.variable {
+.token.variable {
     color: var(--color-code-variable);
 }
 
 .token.deleted {
-    text-decoration: line-through;
+    text-decoration-line: line-through;
 }
 
 .token.inserted {
     border-bottom: 1px dotted hsl(229, 37%, 20%);
-    text-decoration: none;
+    text-decoration-line: none;
 }
 
 .token.italic {
@@ -299,52 +324,7 @@ pre, code, pre[class*=language-], code[class*=language-] {
     cursor: help;
 }
 
-code .token {
-    -moz-osx-font-smoothing: initial;
-    -webkit-font-smoothing: initial;
-    min-height: 1.5rem;
-    position: relative;
-    left: auto;
-}
-
-pre:after {
-    color: #ccc;
-    content: attr(data-lang);
-    font-size: .6rem;
-    font-weight: 600;
-    height: 15px;
-    line-height: 15px;
-    padding: 5px 10px 0;
-    position: absolute;
-    right: 0;
-    text-align: right;
-    top: 0;
-}
-
-pre[class*=language-], code[class*=language-] {
-    background: var(--color-code-bg);
-    color: #525252;
-}
-
-pre, code {
-    background: var(--color-code-bg);
-}
-
-#search-results li {
-    width: 149px;
-}
-
-#search-results h2 {
-    font-size: 17px;
-    margin: 10px 0;
-}
-
-.visually-hidden {
-    clip-path: inset(50%);
-    clip: rect(0 0 0 0);
-    height: 1px;
-    overflow: hidden;
-    position: absolute;
-    white-space: nowrap;
-    width: 1px;
+.language-css .token.string, .style .token.string, .token.entity, .token.url, .token.atrule, .token.regex, .token.operator {
+    color: var(--color-code-operator);
+    background: 0 0;
 }
