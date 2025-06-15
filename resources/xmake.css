@@ -104,7 +104,7 @@ li {
     padding-top: 2px;
 }
 
-:target {
+:target, .target {
     background-color: var(--color-target);
 }
 

@@ -1,28 +1,39 @@
-function locationHashChanged(e) {
-    var tocbody = document.getElementById("toc-body")
-    if (tocbody) {
-        var tocLinks = tocbody.getElementsByTagName("a")
-        for (let i = 0; i < tocLinks.length; i++) {
-            if (tocLinks[i].href == window.location.href) {
-                tocLinks[i].style = "font-weight:bold"
-                tocLinks[i].parentElement.style = "background-color:#d6ffed"
-            } else {
-                tocLinks[i].style = ""
-                tocLinks[i].parentElement.style = ""
-            }
+(() => {
+    const DOM = {
+        sidebarNav: document.querySelector('#sidebar .sidebar-nav'),
+        tocNav: document.querySelector('#toc .toc-nav')
+    };
+
+    function updateActiveSidebarLink() {
+        if (!DOM.sidebarNav) return;
+
+        const newActive = DOM.sidebarNav.querySelector(`a[href="${window.location.href.split('#')[0]}"]`);
+        if (newActive) {
+            newActive.classList.add('target');
         }
     }
-    var navLinks = document.getElementById("sidebar-nav").getElementsByTagName("a")
-    for (let i = 0; i < navLinks.length; i++) {
-        const urlbase = window.location.href.split('#')
-        if (navLinks[i].href == urlbase[0] || navLinks[i].href == window.location.href) {
-            navLinks[i].style = "font-weight:bold"
-            navLinks[i].parentElement.style = "background-color:#d6ffed"
-        } else {
-            navLinks[i].style = ""
-            navLinks[i].parentElement.style = ""
-        }
+
+    function updateActiveTocLink() {
+        if (!DOM.tocNav) return;
+
+        const currentActive = DOM.tocNav.querySelector('.target');
+        currentActive?.classList.remove('target');
+
+        const newActive = DOM.tocNav.querySelector(`a[href="${window.location.hash}"]`);
+        newActive?.classList.add('target');
     }
-}
-window.onhashchange = locationHashChanged;
-locationHashChanged({})
+
+    function init() {
+        if (!document.body) {
+            console.error('Initialization failed: <body> element not found.');
+            return;
+        }
+
+        updateActiveSidebarLink();
+        updateActiveTocLink();
+
+        window.addEventListener('hashchange', updateActiveTocLink);
+    }
+
+    init();
+})();
