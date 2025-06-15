@@ -7,6 +7,7 @@
         tocNav: document.querySelector('#toc .toc-nav')
     };
 
+    const mqMedium = window.matchMedia('(min-width: 769px)');
     const mqXl = window.matchMedia('(min-width: 1200px)');
 
     function toggleSidebar() {
@@ -34,6 +35,17 @@
         newActive?.classList.add('target');
     }
 
+    function updateAriaToggleState() {
+        if (!DOM.sidebarToggle) return;
+
+        document.body.classList.remove('toggled');
+        if (mqMedium.matches) {
+            DOM.sidebarToggle.setAttribute('aria-expanded', 'true');
+        } else {
+            DOM.sidebarToggle.setAttribute('aria-expanded', 'false');
+        }
+    }
+
     function updateTocPosition() {
         if (!DOM.sidebar || !DOM.toc || !DOM.sidebarNav || !DOM.tocNav) return;
 
@@ -56,10 +68,12 @@
 
         updateActiveSidebarLink();
         updateActiveTocLink();
+        updateAriaToggleState();
         updateTocPosition();
 
         DOM.sidebarToggle?.addEventListener('click', toggleSidebar);
         window.addEventListener('hashchange', updateActiveTocLink);
+        mqMedium.addEventListener('change', updateAriaToggleState);
         mqXl.addEventListener('change', updateTocPosition);
     }
 
