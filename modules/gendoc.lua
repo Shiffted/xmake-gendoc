@@ -179,7 +179,7 @@ function changeLanguage(select, currentLang) {
     return string.format(languageSelect, siteroot, page)
 end
 
-function _write_header(sitemap, siteroot, title, locale)
+function _write_head(sitemap, siteroot, title, locale)
     local lang_tags = {
         ["en-us"] = "en-US",
         ["zh-cn"] = "zn-CN"
@@ -273,6 +273,33 @@ function _write_api(sitemap, db, locale, siteroot, page, apimetalist, apientryda
     sitemap:write(htmldata)
 end
 
+function _write_header(sitemap, siteroot, db, locale, page)
+        local search_placeholder_names = {
+        ["en-us"] = "Type to search",
+        ["zh-cn"] = "全文搜索在这里"
+    }
+
+    sitemap:write([[
+<header id="header">
+    <h1 class="app-name"><a href="]], siteroot, [[">xmake</a></h1>
+    <nav>
+        <ul>
+            <li><a href="https://xrepo.xmake.io" target="_blank">Xrepo</a></li
+            ><li><a href="https://github.com/xmake-io/xmake" target="_blank">Github</a></li>
+        </ul>
+    </nav>
+    <div id="search-container">
+        <form role="search" class="search">
+            <label for="search-input" class="visually-hidden">Search</label>
+            <input type="search" id="search-input" placeholder="]], search_placeholder_names[locale], [[" name="search" autocomplete="off" aria-controls="search-results">
+            <div class="search-results"></div>
+        </form>
+    </div>
+    ]], _build_language_selector(db, locale, siteroot, page), [[
+</header>
+]])
+end
+
 function _write_table_of_content(sitemap, db, locale, siteroot, page, apimetalist)
     local names = {
         ["en-us"] = "Interfaces",
@@ -323,24 +350,11 @@ function _build_html_page(docdir, title, db, sidebar, opt)
     local outputfile = path.join(outputfiledir, page)
     local sitemap = io.open(outputfile, 'w')
     local siteroot = opt.siteroot:gsub("\\", "/")
-    _write_header(sitemap, siteroot, title, locale)
+
+    _write_head(sitemap, siteroot, title, locale)
+    _write_header(sitemap, siteroot, db, locale, page)
 
     sitemap:write('<div id="sidebar">\n')
-
-    local names = {
-        ["en-us"] = "Type to search",
-        ["zh-cn"] = "全文搜索在这里"
-    }
-    sitemap:write([[
-<div class="search-container">
-    <form class="search" role="search">
-        <label for="search-input" class="visually-hidden">Search</label>
-        <input aria-controls="search-results" autocomplete="off" id="search-input" type="search" placeholder="]], names[locale], [[">
-        <ul id="search-results" role="listbox"></ul>
-    </form>
-</div>
-]])
-    sitemap:write(_build_language_selector(db, locale, siteroot, page))
     sitemap:write(sidebar)
     sitemap:write('</div>\n')
 

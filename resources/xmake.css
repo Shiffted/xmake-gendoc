@@ -94,9 +94,48 @@ li {
     overflow: auto;
 }
 
-#sidebar {
+#header {
     position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
+    background-color: #f9fffc;
+    border-bottom: 1px solid #ddd;
+    height: 50px;
+    box-sizing: border-box;
+    z-index: 1000;
+    display: flex;
+    margin: 0;
+    flex-direction: row;
+}
+
+#header ul {
+    display: inline-block;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#header li {
+    display: inline-block;
+    margin: 0 .5rem;
+}
+
+.app-name {
+  margin: auto 25px;
+}
+
+.app-name a {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+#sidebar {
+    position: fixed;
+    top: 50px;
     left: 0;
     background-color: #f9fffc;
     border: 1px solid #ddd;
@@ -131,7 +170,7 @@ li {
 
 #toc {
     position: fixed;
-    top: 0;
+    top: 50px;
     bottom: 0;
     right: 0;
     background-color: #f9fffc;
