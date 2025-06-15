@@ -288,11 +288,11 @@ function _write_header(sitemap, siteroot, db, locale, page)
             ><li><a href="https://github.com/xmake-io/xmake" target="_blank">Github</a></li>
         </ul>
     </nav>
-    <div id="search-container">
+    <div class="search-container">
         <form role="search" class="search">
-            <label for="search-input" class="visually-hidden">Search</label>
-            <input id="search-input" type="search" placeholder="]], search_placeholder_names[locale], [[" aria-controls="search-results" name="search" autocomplete="off">
-            <div id="search-results"></div>
+            <label for="header-search-input" class="visually-hidden">Search</label>
+            <input id="header-search-input" class="search-input" type="search" placeholder="]], search_placeholder_names[locale], [[" aria-controls="header-search-results" autocomplete="off">
+            <div id="header-search-results"></div>
         </form>
     </div>
     ]], _build_language_selector(db, locale, siteroot, page), [[
@@ -467,7 +467,7 @@ miniSearch.addAll(documents)
 
 function changeSearch(input) {
   const results = miniSearch.search(input)
-  document.querySelector('#search-results').innerHTML = results.map(result => {
+  const result = results.map(result => {
     return `
       <li role="option">
         <a href="${result.url}#${result.key}">
@@ -476,8 +476,9 @@ function changeSearch(input) {
       </li>
     `;
   }).join('');
+  document.querySelector('#header-search-results').innerHTML = '<ul role="listbox">' + result + '</ul>';
 }
-document.querySelector('#search-input').addEventListener('input', (event) => {
+document.querySelector('#header-search-input').addEventListener('input', (event) => {
     changeSearch(event.target.value.trim());
 });
 ]])
