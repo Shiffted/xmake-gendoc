@@ -9,6 +9,7 @@
 
     const mqMedium = window.matchMedia('(min-width: 769px)');
     const mqXl = window.matchMedia('(min-width: 1200px)');
+    const mqFull = window.matchMedia('(min-width: {{full-width}})');
 
     function toggleSidebar() {
         document.body.classList.toggle('toggled');
@@ -39,7 +40,7 @@
         if (!DOM.sidebarToggle) return;
 
         document.body.classList.remove('toggled');
-        if (mqMedium.matches) {
+        if (mqMedium.matches || mqFull.matches) {
             DOM.sidebarToggle.setAttribute('aria-expanded', 'true');
         } else {
             DOM.sidebarToggle.setAttribute('aria-expanded', 'false');
@@ -75,6 +76,7 @@
         window.addEventListener('hashchange', updateActiveTocLink);
         mqMedium.addEventListener('change', updateAriaToggleState);
         mqXl.addEventListener('change', updateTocPosition);
+        mqFull.addEventListener('change', updateAriaToggleState);
     }
 
     init();
