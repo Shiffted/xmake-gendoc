@@ -507,13 +507,15 @@ function _build_html_pages(opt)
     os.trycp(path.join(os.projectdir(), "resources", "*"), opt.outputdir)
 
     local sidebar_width = 300
-    local toc_width = 210
+    local min_toc_width = 210
+    local max_toc_width = 240
     local max_content_width = 1000
     local css_vars = {
         ["sidebar-width"] = sidebar_width .. "px",
-        ["toc-width"] = toc_width .. "px",
+        ["min-toc-width"] = min_toc_width .. "px",
+        ["max-toc-width"] = max_toc_width .. "px",
         ["max-content-width"] = max_content_width .. "px",
-        ["full-width"] = (sidebar_width + toc_width + max_content_width) .. "px",
+        ["full-width"] = (sidebar_width + max_toc_width + max_content_width) .. "px",
     }
     for _, css_file in ipairs(os.files(path.join(os.projectdir(), "resources", "**.css"))) do
         local outputfile = path.join(opt.outputdir, path.relative(css_file, "resources"))

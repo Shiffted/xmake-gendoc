@@ -38,15 +38,15 @@ body {
     --header-height: 60px;
     --sidebar-toggle-height: 48px;
     --sidebar-width: var(sidebar-width); /* Vars without "--" are set by gendoc. */
-    --toc-width: 0px; /* Toc is inside sidebar for smaller screens. */
+    --min-toc-width: var(min-toc-width);
+    --max-toc-width: var(max-toc-width);
     --max-content-width: var(max-content-width);
 
-    /* The actual width of the elements doesn't change, but their layout does. */
-    --responsive-toc-width: var(--toc-width);
-    --responsive-sidebar-width: 0px; /* Sidebar is hidden by default for smaller screens. */
+    --toc-width: 0px; /* Toc is inside sidebar for smaller screens. */
+    --layout-sidebar-width: 0px; /* Sidebar is hidden by default for smaller screens. */
 
     --stable-side-margin: max(0px, (100% - var(--sidebar-width) - var(--toc-width) - var(--max-content-width)) / 2);
-    --side-margin: max(0px, (100% - var(--responsive-sidebar-width) - var(--toc-width) - var(--max-content-width)) / 2);
+    --side-margin: max(0px, (100% - var(--layout-sidebar-width) - var(--toc-width) - var(--max-content-width)) / 2);
 
     --transform: none; /* We use transform for smaller screens to slide the sidebar in and out. */
 }
@@ -156,7 +156,7 @@ select {
     display: flex;
     gap: 1rem;
     padding: 0 calc(var(--stable-side-margin) + 1rem);
-    z-index: 1000;
+    z-index: 1001;
 }
 
 #sidebar-toggle {
@@ -209,19 +209,23 @@ select {
     box-sizing: border-box;
     width: var(--toc-width);
 
-    background-color: var(--color-sidebar);
-    overflow: auto;
+    padding: 25px 15px;
+    z-index: 1000;
 }
 
 .content {
     position: absolute;
     top: var(--header-height);
-    right: calc(var(--side-margin) + var(--responsive-toc-width));
-    left: calc(var(--side-margin) + var(--responsive-sidebar-width));
+    right: calc(var(--side-margin) + var(--toc-width));
+    left: calc(var(--side-margin) + var(--layout-sidebar-width));
     box-sizing: border-box;
     max-width: var(--max-content-width);
 
     transform: var(--transform);
+}
+
+.no-toc .content {
+    right: calc(var(--side-margin));
 }
 
 .menu-bars {
@@ -331,6 +335,57 @@ select {
 
 #sidebar ul {
     list-style-type: none;
+}
+
+#toc>.toc-nav {
+    box-sizing: border-box;
+    max-height: 100%;
+
+    background-color: var(--color-sidebar);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 0 20px 1em;
+    overflow: auto;
+    scrollbar-color: transparent transparent;
+}
+
+#toc>.toc-nav:hover {
+    scrollbar-color: auto;
+}
+
+.toc-nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding-left: 0;
+    white-space: nowrap;
+}
+
+#toc p {
+    font-weight: 700;
+    margin: 1em 0 0.5em;
+}
+
+#toc a {
+    box-sizing: border-box;
+    min-width: 100%;
+    width: fit-content;
+
+    border-bottom: 1px solid var(--color-border);
+    color: inherit;
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 0 0.25rem;
+    text-decoration: none;
+}
+
+#toc a:hover {
+    background-color: var(--color-hover);
+    text-decoration: underline;
+}
+
+#toc .target:hover {
+    background-color: var(--color-target);
 }
 
 #md-content {
@@ -473,11 +528,11 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
 
 @media (min-width: 769px) {
     body {
-        --responsive-sidebar-width: var(--sidebar-width);
+        --layout-sidebar-width: var(--sidebar-width);
     }
 
     .toggled {
-        --responsive-sidebar-width: 0px;
+        --layout-sidebar-width: 0px;
         --transform: none;
     }
 
@@ -500,11 +555,7 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
 
 @media (min-width: 1200px) {
     body {
-        --toc-width: var(toc-width);
-    }
-
-    .no-toc {
-        --responsive-toc-width: 0px;
+        --toc-width: clamp(var(--min-toc-width), 100% - var(--layout-sidebar-width) - var(--max-content-width), var(--max-toc-width));
     }
 }
 
@@ -514,7 +565,7 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
     }
 
     .toggled {
-        --responsive-sidebar-width: var(--sidebar-width);
+        --layout-sidebar-width: var(--sidebar-width);
     }
 
     #sidebar-toggle {
