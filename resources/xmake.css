@@ -37,10 +37,10 @@
 body {
     --header-height: 60px;
     --sidebar-toggle-height: 48px;
-    --sidebar-width: var(sidebar-width); /* Vars without "--" are set by gendoc. */
-    --min-toc-width: var(min-toc-width);
-    --max-toc-width: var(max-toc-width);
-    --max-content-width: var(max-content-width);
+    --sidebar-width: {{sidebar-width}}; /* Set by gendoc. */
+    --min-toc-width: {{min-toc-width}};
+    --max-toc-width: {{max-toc-width}};
+    --max-content-width: {{max-content-width}};
 
     --toc-width: 0px; /* Toc is inside sidebar for smaller screens. */
     --layout-sidebar-width: 0px; /* Sidebar is hidden by default for smaller screens. */
@@ -559,7 +559,7 @@ code[class*=language-] ::selection, code[class*=language-]::selection, pre[class
     }
 }
 
-@media (min-width: var(full-width)) {
+@media (min-width: {{full-width}}) {
     html {
         scrollbar-gutter: stable;
     }

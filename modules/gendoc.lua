@@ -517,11 +517,15 @@ function _build_html_pages(opt)
         ["max-content-width"] = max_content_width .. "px",
         ["full-width"] = (sidebar_width + max_toc_width + max_content_width) .. "px",
     }
-    for _, css_file in ipairs(os.files(path.join(os.projectdir(), "resources", "**.css"))) do
-        local outputfile = path.join(opt.outputdir, path.relative(css_file, "resources"))
-        io.gsub(outputfile, "(var%((.-)%))", function(_, variable)
-            return css_vars[variable:trim()]
-        end)
+
+    local resource_dir = path.join(os.projectdir(), "resources")
+    for _, resource_file in ipairs(os.files(path.join(resource_dir, "**"))) do
+        if resource_file:endswith(".css") or resource_file:endswith(".js") then
+            local outputfile = path.join(opt.outputdir, path.relative(resource_file, resource_dir))
+            io.gsub(outputfile, "({{(.-)}})", function(_, variable)
+                return assert(css_vars[variable:trim()], "Undefined template variable '%s' in '%s'", variable, outputfile)
+            end)
+        end
     end
 end
 
